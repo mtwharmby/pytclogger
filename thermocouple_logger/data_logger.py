@@ -6,22 +6,20 @@ import serial
 from .data_writer import DataWriter
 
 
-def prepare_input(serial_in):
+def process_input(serial_in, handlers):
     # TODO Make into class
-    temp_patt = re.compile(br"int_temp=(?P<int_temp>\d+\.\d+);tc_temp=(?P<tc_temp>\d+\.\d+);\r\n")
+    temp_patt = re.compile(
+        br"int_temp=(?P<int_temp>\d+\.\d+);tc_temp=(?P<tc_temp>\d+\.\d+);\r\n"
+    )
     for temp_match in temp_patt.finditer(serial_in):
         data = temp_match.groupdict()
         for k, v in data.items():
+            # Change bytes to floats
             data[k] = float(v)
 
-    return data
-
-
-def process_input(serial_in, handlers):
-    data = prepare_input(serial_in)
-
-    for proc in handlers:
-        proc.write_data(data)
+        # with data extracted, send it for processing
+        for proc in handlers:
+            proc.write_data(data)
 
 
 def read_device(ser_dev, handlers, test=False):
