@@ -17,53 +17,45 @@
 #include <SPI.h>
 #include "Adafruit_MAX31855.h"
 
-// Default connection is using software SPI, but comment and uncomment one of
-// the two examples below to switch between software SPI and hardware SPI:
-
-// Example creating a thermocouple instance with software SPI on any three
-// digital IO pins.
+// Running on software SPI
 #define MAXDO   3
 #define MAXCS   4
 #define MAXCLK  5
-
-// initialize the Thermocouple
 Adafruit_MAX31855 thermocouple(MAXCLK, MAXCS, MAXDO);
 
 // Example creating a thermocouple instance with hardware SPI
 // on a given CS pin.
 //#define MAXCS   10
 //Adafruit_MAX31855 thermocouple(MAXCS);
+// See here: https://learn.adafruit.com/circuitpython-basics-i2c-and-spi/spi-devices
 
 void setup() {
   Serial.begin(9600);
 
   while (!Serial) delay(1); // wait for Serial on Leonardo/Zero, etc
 
-  Serial.println("MAX31855 test");
+  Serial.println("Stabilising MAX31855...");
   // wait for MAX chip to stabilize
   delay(500);
-  Serial.print("Initializing sensor...");
+  Serial.print("Initialising sensor...");
   if (!thermocouple.begin()) {
-    Serial.println("ERROR.");
+    Serial.println("ERROR: Thermocouple not ready");
     while (1) delay(10);
   }
-  Serial.println("DONE.");
 }
 
 void loop() {
-  // basic readout test, just print the current temp
-   Serial.print("Internal Temp = ");
-   Serial.println(thermocouple.readInternal());
-
-   double c = thermocouple.readCelsius();
-   if (isnan(c)) {
-     Serial.println("Something wrong with thermocouple!");
-   } else {
-     Serial.print("C = ");
-     Serial.println(c);
-   }
-   //Serial.print("F = ");
-   //Serial.println(thermocouple.readFahrenheit());
-
-   delay(1000);
+  //Serial.print("F = ");
+  //Serial.println(thermocouple.readFahrenheit());
+  double temp_c = thermocouple.readCelsius();
+  if (isnan(temp_c)) {
+    Serial.println("ERROR: Failed to read temperature");
+  } else {
+   Serial.print("int_temp=");
+   Serial.print(thermocouple.readInternal());
+   Serial.print(";tc_temp=");
+   Serial.print(temp_c);
+   Serial.println(";");
+  }
+  delay(1000);
 }
