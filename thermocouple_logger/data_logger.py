@@ -3,6 +3,14 @@ import time
 import serial
 
 
+def prepare_input(serial_in):
+    data = serial_in.decode("utf-8").strip().strip(";")
+    data = data.split(";")
+
+    return {d_item.split("=")[0]: float(d_item.split("=")[1])
+            for d_item in data}
+
+
 def process_input(serial_in):
     print(serial_in)
 
