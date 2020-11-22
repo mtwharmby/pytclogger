@@ -7,7 +7,6 @@ def process_input(serial_in):
     print(serial_in)
 
 
-def read_device(ser_dev):
     with ser_dev as ser:
         while True:
             time.sleep(.5)
