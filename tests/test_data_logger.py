@@ -1,7 +1,6 @@
 import os
 import serial
 
-import thermocouple_logger.data_logger
 from thermocouple_logger.data_logger import (
     read_device, prepare_input, process_input
 )
@@ -32,7 +31,7 @@ def test_prepare_input():
 def test_process_input(monkeypatch, mocker):
     # Patch prepare_input.
     # N.B. lambda x is needed as prepare_input takes one argument.
-    monkeypatch.setattr(thermocouple_logger.data_logger, "prepare_input",
+    monkeypatch.setattr("thermocouple_logger.data_logger.prepare_input",
                         lambda x: {"int_temp": 25.6, "tc_temp": 23.4})
 
     # Mock the open builtin. open returns open, so we set __enter__() to
