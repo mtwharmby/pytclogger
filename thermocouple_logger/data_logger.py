@@ -1,7 +1,8 @@
-import os
 import time
 
 import serial
+
+from .data_writer import DataWriter
 
 
 def prepare_input(serial_in):
@@ -12,21 +13,19 @@ def prepare_input(serial_in):
             for d_item in data}
 
 
-def process_input(serial_in, filename):
+def process_input(serial_in, handlers):
     data = prepare_input(serial_in)
 
-    with open(filename, "a") as out_f:
-        line = ",".join(str(v) for v in data.values())
-        line = f"{time.time()},{line}{os.linesep}"
-        out_f.write(line)
+    for proc in handlers:
+        proc.write_data(data)
 
 
-def read_device(ser_dev, test=False):
+def read_device(ser_dev, handlers, test=False):
     with ser_dev as ser:
         while True:
             time.sleep(.5)
             while ser.in_waiting > 0:
-                process_input(ser.read_until())
+                process_input(ser.read_until(), handlers)
 
             if test:
                 # Break after out of infinite loop
@@ -34,7 +33,11 @@ def read_device(ser_dev, test=False):
 
 
 def main():
-    read_device(serial.Serial("/dev/ttyACM0", 9600, timeout=10))
+    filename = "outfile.csv"
+    start_time = time.time()
+    handlers = []
+    handlers.append(DataWriter(filename, start_time))
+    read_device(serial.Serial("/dev/ttyACM0", 9600, timeout=10), handlers)
 
 
 if __name__ == "__main__":
