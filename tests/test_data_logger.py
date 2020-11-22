@@ -41,6 +41,12 @@ def test_process_input(monkeypatch, mocker):
     open_mock.__enter__().return_value = open_mock
     mocker.patch("builtins.open", open_mock)
 
+    # Ensure that we always get the same unix time stamp
+    fake_time = 1606084449.7003403
+    monkeypatch.setattr("time.time", lambda: fake_time)
+
     process_input(b"int_temp=25.6;tc_temp=23.4;\r\n", "outfile.csv")
     open_mock.assert_called_with("outfile.csv", "a")
-    open_mock().__enter__().write.assert_called_with(f"25.6,23.4{os.linesep}")
+    open_mock().__enter__().write.assert_called_with(
+        f"{fake_time},25.6,23.4{os.linesep}"
+    )

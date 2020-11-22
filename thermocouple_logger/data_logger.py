@@ -17,7 +17,7 @@ def process_input(serial_in, filename):
 
     with open(filename, "a") as out_f:
         line = ",".join(str(v) for v in data.values())
-        line = f"{line}{os.linesep}"
+        line = f"{time.time()},{line}{os.linesep}"
         out_f.write(line)
 
 
