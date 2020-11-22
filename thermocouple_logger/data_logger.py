@@ -11,8 +11,13 @@ def prepare_input(serial_in):
             for d_item in data}
 
 
-def process_input(serial_in):
-    print(serial_in)
+def process_input(serial_in, filename):
+    data = prepare_input(serial_in)
+
+    with open(filename, "a") as out_f:
+        print(",".join(str(v) for v in data.values()))
+        print(out_f.write)
+        out_f.write(",".join(str(v) for v in data.values()))
 
 
 def read_device(ser_dev, test=False):
