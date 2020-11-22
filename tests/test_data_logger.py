@@ -1,3 +1,4 @@
+import os
 import serial
 
 import thermocouple_logger.data_logger
@@ -43,4 +44,4 @@ def test_process_input(monkeypatch, mocker):
 
     process_input(b"int_temp=25.6;tc_temp=23.4;\r\n", "outfile.csv")
     open_mock.assert_called_with("outfile.csv", "a")
-    open_mock().__enter__().write.assert_called_with("25.6,23.4")
+    open_mock().__enter__().write.assert_called_with(f"25.6,23.4{os.linesep}")

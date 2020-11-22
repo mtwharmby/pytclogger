@@ -1,3 +1,4 @@
+import os
 import time
 
 import serial
@@ -15,7 +16,9 @@ def process_input(serial_in, filename):
     data = prepare_input(serial_in)
 
     with open(filename, "a") as out_f:
-        out_f.write(",".join(str(v) for v in data.values()))
+        line = ",".join(str(v) for v in data.values())
+        line = f"{line}{os.linesep}"
+        out_f.write(line)
 
 
 def read_device(ser_dev, test=False):
