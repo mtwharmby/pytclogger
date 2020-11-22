@@ -1,3 +1,4 @@
+import re
 import time
 
 import serial
@@ -6,11 +7,14 @@ from .data_writer import DataWriter
 
 
 def prepare_input(serial_in):
-    data = serial_in.decode("utf-8").strip().strip(";")
-    data = data.split(";")
+    # TODO Make into class
+    temp_patt = re.compile(br"int_temp=(?P<int_temp>\d+\.\d+);tc_temp=(?P<tc_temp>\d+\.\d+);\r\n")
+    for temp_match in temp_patt.finditer(serial_in):
+        data = temp_match.groupdict()
+        for k, v in data.items():
+            data[k] = float(v)
 
-    return {d_item.split("=")[0]: float(d_item.split("=")[1])
-            for d_item in data}
+    return data
 
 
 def process_input(serial_in, handlers):
