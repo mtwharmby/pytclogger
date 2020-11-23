@@ -1,5 +1,5 @@
 import os
-from thermocouple_logger.data_writer import DataWriter
+from pytclogger.data_writer import DataWriter
 
 
 def test_write_data(monkeypatch, mocker):

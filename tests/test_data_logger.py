@@ -1,13 +1,11 @@
 import serial
 
-from thermocouple_logger.data_logger import (
-    read_device, process_input
-)
+from pytclogger.data_logger import read_device, process_input
 
 
 def test_read_device(mocker):
     patch_proc_in = mocker.patch(
-        "thermocouple_logger.data_logger.process_input"
+        "pytclogger.data_logger.process_input"
     )
     ser_dev = mocker.create_autospec(serial.Serial)
     # We only want the inner while loop to run once, so set in_waiting to 0\
