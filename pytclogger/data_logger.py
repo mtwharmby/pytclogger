@@ -3,7 +3,7 @@ import time
 
 import serial
 
-from data_writer import DataWriter
+from .data_writer import DataWriter
 
 
 def process_input(serial_in, handlers):
