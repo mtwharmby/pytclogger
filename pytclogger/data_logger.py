@@ -9,7 +9,8 @@ from .data_writer import DataWriter
 def process_input(serial_in, handlers):
     # TODO Make into class
     temp_patt = re.compile(
-        br"int_temp=(?P<int_temp>\d+\.\d+);tc_temp=(?P<tc_temp>\d+\.\d+);\r\n"
+        br"int_temp=(?P<int_temp>\d+\.\d+);tc1_temp=(?P<tc1_temp>\d+\.\d+);"
+        + br"tc2_temp=(?P<tc2_temp>\d+\.\d+);\r\n"
     )
     for temp_match in temp_patt.finditer(serial_in):
         data = temp_match.groupdict()

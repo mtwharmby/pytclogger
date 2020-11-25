@@ -20,12 +20,14 @@ def test_read_device(mocker):
 
 
 # TODO Add additional cases - e.g. start up
+# TODO Make number of TCs read from a parameter
 def test_process_input(mocker):
-    reading = b"int_temp=25.6;tc_temp=23.4;\r\n"
+    # reading = b"int_temp=25.6;tc_temp=23.4;\r\n"
+    reading = b"int_temp=27.75;tc1_temp=27.00;tc2_temp=25.25;\r\n"
     dummy_handler = mocker.MagicMock()
 
     process_input(reading, [dummy_handler])
     dummy_handler.write_data.assert_called_once()
     dummy_handler.write_data.assert_called_with(
-        {"int_temp": 25.6, "tc_temp": 23.4}
+        {"int_temp": 27.75, "tc1_temp": 27.00, "tc2_temp": 25.25}
     )
