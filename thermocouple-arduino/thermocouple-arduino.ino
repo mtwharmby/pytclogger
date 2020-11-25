@@ -16,12 +16,18 @@
 
 #include <SPI.h>
 #include "Adafruit_MAX31855.h"
+#include "max6675.h"
 
 // Running on software SPI
-#define MAXDO   3
-#define MAXCS   4
-#define MAXCLK  5
-Adafruit_MAX31855 thermocouple(MAXCLK, MAXCS, MAXDO);
+#define MAXDO2  6
+#define MAXCS2  7
+#define MAXCLK2 8
+#define MAXDO1   3
+#define MAXCS1   4
+#define MAXCLK1  5
+
+Adafruit_MAX31855 thermocouple1(MAXCLK1, MAXCS1, MAXDO1);
+MAX6675 thermocouple2(MAXCLK2, MAXCS2, MAXDO2);
 
 // Example creating a thermocouple instance with hardware SPI
 // on a given CS pin.
@@ -34,12 +40,13 @@ void setup() {
 
   while (!Serial) delay(1); // wait for Serial on Leonardo/Zero, etc
 
-  Serial.println("Stabilising MAX31855...");
+  Serial.println("Stabilising thermocouple amplifiers...");
   // wait for MAX chip to stabilize
   delay(500);
-  Serial.print("Initialising sensor...");
-  if (!thermocouple.begin()) {
-    Serial.println("ERROR: Thermocouple not ready");
+  Serial.println("Initialising sensors...");
+  if (!thermocouple1.begin()) {
+    // Only for MAX31855 chips!
+    Serial.println("ERROR: MAX31855 not ready");
     while (1) delay(10);
   }
 }
@@ -47,14 +54,17 @@ void setup() {
 void loop() {
   //Serial.print("F = ");
   //Serial.println(thermocouple.readFahrenheit());
-  double temp_c = thermocouple.readCelsius();
-  if (isnan(temp_c)) {
+  double temp1_c = thermocouple1.readCelsius();
+  double temp2_c = thermocouple2.readCelsius();
+  if (isnan(temp1_c) || isnan(temp2_c)) {
     Serial.println("ERROR: Failed to read temperature");
   } else {
    Serial.print("int_temp=");
-   Serial.print(thermocouple.readInternal());
-   Serial.print(";tc_temp=");
-   Serial.print(temp_c);
+   Serial.print(thermocouple1.readInternal());
+   Serial.print(";tc1_temp=");
+   Serial.print(temp1_c);
+   Serial.print(";tc2_temp=");
+   Serial.print(temp2_c);
    Serial.println(";");
   }
   delay(1000);
